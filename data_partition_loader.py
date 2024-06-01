@@ -10,21 +10,12 @@ def read_parquet_dataset_from_local(path_to_dataset: str, start_from: int = 0, n
 
     Параметры:
     -----------
-    path_to_dataset: str
-        Путь до директории с партициями.
-    start_from: int, default=0
-        Номер партиции, с которой начать чтение.
-    num_parts_to_read: int, default=2
-        Число партиций, которые требуется прочитать.
-    columns: List[str], default=None
-        Список колонок, которые нужно прочитать из каждой партиции. Если None, то считываются все колонки.
-    verbose: bool, default=False
-        Флаг для вывода отладочной информации.
-
-    Возвращаемое значение:
-    ----------------------
-    frame: pandas.DataFrame
-        Прочитанные партиции, преобразованные к pandas.DataFrame.
+    читает num_parts_to_read партиций, преобразовывает их к pd.DataFrame и возвращает
+    :param path_to_dataset: путь до директории с партициями
+    :param start_from: номер партиции, с которой нужно начать чтение
+    :param num_parts_to_read: количество партиций, которые требуется прочитать
+    :param columns: список колонок, которые нужно прочитать из партиции
+    :return: pd.DataFrame
     """
 
     res = []  # Список для хранения прочитанных DataFrame'ов
