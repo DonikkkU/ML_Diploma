@@ -18,30 +18,23 @@ def read_parquet_dataset_from_local(path_to_dataset: str, start_from: int = 0, n
     :return: pd.DataFrame
     """
 
-    res = []  # Список для хранения прочитанных DataFrame'ов
-    start_from = max(0, start_from)  # Убедимся, что `start_from` не отрицательный
-    
-    # Словарь для хранения путей к файлам партиций с ключами - номерами партиций
+    res = [] 
+    start_from = max(0, start_from) 
     dataset_paths = {}
     for filename in os.listdir(path_to_dataset):
         file_path = os.path.join(path_to_dataset, filename)
-        if os.path.isfile(file_path):  # Проверка, что это файл, а не директория
+        if os.path.isfile(file_path): 
             try:
-                # Попытка извлечь номер партиции из имени файла
                 key = int(os.path.splitext(filename)[0].split("_")[-1])
                 dataset_paths[key] = file_path
             except ValueError:
-                # Если не удалось преобразовать к числу, пропускаем файл
                 if verbose:
                     print(f"Пропускаем нечисловое имя файла: {filename}")
     
-    # Отбор и сортировка партиций для чтения
     chunks = [dataset_paths[num] for num in sorted(dataset_paths.keys()) if num >= start_from][:num_parts_to_read]
-    
     if verbose:
         # Вывод путей к читаемым файлам, если verbose=True
         print("Чтение партиций:", *chunks, sep="\n")
-    
     # Чтение партиций в DataFrame
     for chunk_path in tqdm.tqdm_notebook(chunks, desc="Чтение набора данных с pandas"):
         chunk = pd.read_parquet(chunk_path, columns=columns)
